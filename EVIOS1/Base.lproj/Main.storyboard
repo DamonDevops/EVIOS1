@@ -110,6 +110,7 @@
                     </view>
                     <connections>
                         <outlet property="appBackground" destination="Yg4-b1-cds" id="Lzp-7W-8Zr"/>
+                        <outlet property="login" destination="bsv-Gs-jJ8" id="ZX4-IL-kin"/>
                         <outlet property="newsletterSwitch" destination="4nL-d5-vgj" id="05z-N1-VDN"/>
                         <outlet property="password" destination="y8Q-5L-6Lg" id="V1l-kA-a5q"/>
                         <outlet property="profilePic" destination="Na8-77-rgt" id="6PY-2T-I7W"/>

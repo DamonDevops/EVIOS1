@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var newsletterSwitch: UISwitch!
     @IBOutlet weak var visibilityButton: UIImageView!
     @IBOutlet weak var password: UITextField!
-    
+    @IBOutlet weak var login: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +37,17 @@ class ViewController: UIViewController {
         
         newsletterSwitch.isOn = true
         
+        login.keyboardType = .default
+        login.textContentType = .username
+        
         password.keyboardType = .default
+        password.isSecureTextEntry = true
+        password.textContentType = .password
+        
+        let keyboardOut = UITapGestureRecognizer(target: view, action:
+        #selector(UIView.endEditing))
+        view.addGestureRecognizer(keyboardOut)
+        
     }
     
     @objc func onImageTap() {
