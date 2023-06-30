@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var visibilityButton: UIImageView!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var login: UITextField!
+    @IBOutlet weak var loginButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,7 @@ class ViewController: UIViewController {
         
         newsletterSwitch.isOn = true
         
-        login.keyboardType = .default
+        login.keyboardType = .emailAddress
         login.textContentType = .username
         
         password.keyboardType = .default
@@ -58,7 +59,41 @@ class ViewController: UIViewController {
             password.isSecureTextEntry = true
             visibilityButton.image = UIImage(named: "visibilityon")
         }
-            
+    }
+    
+    @IBAction func loginTapped(_ sender: Any) {
+        if let log = login.text{
+            if(log == ""){
+                alertGenerator("ERROR", "Login vide", "OK")
+            }else{
+                if let pass = password.text{
+                    if(pass == ""){
+                        alertGenerator("ERROR", "password vide", "OK")
+                    }else{
+                        if (log.contains("@")){
+                            if(pass.count >= 4){
+                                if(newsletterSwitch.isOn){
+                                    alertGenerator("Bienvenue \(log) !", "vous vous êtes inscrit à la newsletter", "Merci!")
+                                }else{
+                                    alertGenerator("Bienvenue \(log) !", "vous ne vous êtes pas inscrit à la newsletter", "Merci!")
+                                }
+                            }else{
+                                alertGenerator("ERROR", "Mot de passe trop court! (4 caractères)", "OK")
+                            }
+                        }else {
+                            alertGenerator("ERROR", "Login invalide (pas d'@)", "OK")
+                        }
+                    }
+                    }
+                    
+            }
+        }
+    }
+    
+    func alertGenerator(_ titleA :String, _ mess :String, _ button :String){
+        let alert = UIAlertController(title: titleA, message: mess, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: button, style: .cancel))
+        present(alert, animated: true, completion: nil)
     }
 }
 
