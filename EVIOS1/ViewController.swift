@@ -9,6 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet var appView: UIView!
     @IBOutlet weak var appBackground: UIImageView!
     @IBOutlet weak var profilePic: UIImageView!
     @IBOutlet weak var newsletterSwitch: UISwitch!
@@ -16,6 +17,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var login: UITextField!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var loader: UIView!
+    @IBOutlet weak var animateLoader: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +42,7 @@ class ViewController: UIViewController {
         newsletterSwitch.isOn = true
         
         login.keyboardType = .emailAddress
-        login.textContentType = .username
+        login.textContentType = .emailAddress
         
         password.keyboardType = .default
         password.isSecureTextEntry = true
@@ -49,6 +52,7 @@ class ViewController: UIViewController {
         #selector(UIView.endEditing))
         view.addGestureRecognizer(keyboardOut)
         
+        loader.isHidden = true
     }
     
     @objc func onImageTap() {
@@ -62,6 +66,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func loginTapped(_ sender: Any) {
+        
         if let log = login.text{
             if(log == ""){
                 alertGenerator("ERROR", "Login vide", "OK")
@@ -72,10 +77,22 @@ class ViewController: UIViewController {
                     }else{
                         if (log.contains("@")){
                             if(pass.count >= 4){
-                                if(newsletterSwitch.isOn){
-                                    alertGenerator("Bienvenue \(log) !", "vous vous êtes inscrit à la newsletter", "Merci!")
-                                }else{
-                                    alertGenerator("Bienvenue \(log) !", "vous ne vous êtes pas inscrit à la newsletter", "Merci!")
+                                loader.isHidden = false
+                                appView.bringSubviewToFront(loader)
+                                
+                                animateLoader.startAnimating()
+                                
+                                LoginService.logingIn {
+                                    DispatchQueue.main.async {
+                                        self.animateLoader.stopAnimating()
+                                        self.loader.isHidden = true
+                                        
+                                        if(self.newsletterSwitch.isOn){
+                                            self.alertGenerator("Bienvenue \(log) !", "vous vous êtes inscrit à la newsletter", "Merci!")
+                                        }else{
+                                            self.alertGenerator("Bienvenue \(log) !", "vous ne vous êtes pas inscrit à la newsletter", "Merci!")
+                                        }
+                                    }
                                 }
                             }else{
                                 alertGenerator("ERROR", "Mot de passe trop court! (4 caractères)", "OK")
@@ -84,8 +101,7 @@ class ViewController: UIViewController {
                             alertGenerator("ERROR", "Login invalide (pas d'@)", "OK")
                         }
                     }
-                    }
-                    
+                }
             }
         }
     }
@@ -94,6 +110,15 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: titleA, message: mess, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: button, style: .cancel))
         present(alert, animated: true, completion: nil)
+    }
+    
+    class LoginService {
+        static func logingIn(completion: @escaping() -> Void) {
+            DispatchQueue.global(qos: .background).async {
+                sleep(3)
+                completion()
+            }
+        }
     }
 }
 
